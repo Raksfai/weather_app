@@ -1,0 +1,14 @@
+/* В файле style.css */
+.geometric-background {
+    width: 100%;
+    min-height: 100vh; /* Чтобы блок занимал всю высоту экрана */
+    
+    background: 
+      linear-gradient(135deg,#0000 20.5%,#022d1d 0 29.5%,#0000 0) 0 50px,
+      linear-gradient( 45deg,#0000 8%,#022d1d 0 17%, #0000 0 58%) 100px 0,
+      linear-gradient(135deg,#0000 8%,#022d1d 0 17%, #0000 0 58%,#022d1d 0 67%,#0000 0),        
+      linear-gradient( 45deg,#0000 8%,#022d1d 0 17%, #0000 0 58%,#022d1d 0 67%,#0000 0 83%,#022d1d 0 92%,#0000 0),
+      #0c8799;
+    background-size: 200px 200px;
+
+}

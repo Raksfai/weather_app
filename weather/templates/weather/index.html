@@ -1,15 +1,29 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'weather/style.css' %}">
     <title>Weather App</title>
 </head>
-<body>
+<body class="geometric-background">
     <h1>Weather</h1>
     <form action="" method="get">
         <input type="text" name="city" placeholder="Input city...">
         <button type="submit">Get Weather</button>
     </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <div>
+        <p>Country: {{ country }}</p>
+        <p>City: {{ city }}</p>
+        <p>Temperature: {{ temp }}°C</p>
+        <p>Feels Like: {{ feels_like }}°C</p>
+        <p>Humidity: {{ humidity }}%</p>
+        <p>Pressure: {{ pressure }} hPa</p>
+        <p>Description: {{ description }}</p>
+    </div>
 </body>
 </html>

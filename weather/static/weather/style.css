@@ -1,14 +1,302 @@
-/* В файле style.css */
-.geometric-background {
-    width: 100%;
-    min-height: 100vh; /* Чтобы блок занимал всю высоту экрана */
-    
-    background: 
-      linear-gradient(135deg,#0000 20.5%,#022d1d 0 29.5%,#0000 0) 0 50px,
-      linear-gradient( 45deg,#0000 8%,#022d1d 0 17%, #0000 0 58%) 100px 0,
-      linear-gradient(135deg,#0000 8%,#022d1d 0 17%, #0000 0 58%,#022d1d 0 67%,#0000 0),        
-      linear-gradient( 45deg,#0000 8%,#022d1d 0 17%, #0000 0 58%,#022d1d 0 67%,#0000 0 83%,#022d1d 0 92%,#0000 0),
-      #0c8799;
-    background-size: 200px 200px;
+/* ── Variables ─────────────────────────────────── */
+:root {
+    --bg-from: #0f0c29;
+    --bg-via:  #302b63;
+    --bg-to:   #24243e;
+    --glass-bg:     rgba(255, 255, 255, 0.08);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --text:    #f0f0ff;
+    --muted:   rgba(255,255,255,0.5);
+    --accent:  #a78bfa;
+    --accent2: #7dd3fc;
+    --danger:  rgba(255, 100, 100, 0.85);
+}
 
+/* ── Reset ─────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Base ──────────────────────────────────────── */
+body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-from), var(--bg-via), var(--bg-to));
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    overflow-x: hidden;
+}
+
+/* ── Animated Orbs ─────────────────────────────── */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 12s ease-in-out infinite alternate;
+}
+.orb-1 { width: 500px; height: 500px; background: rgba(167,139,250,0.2); top: -150px; left: -100px; animation-duration: 14s; }
+.orb-2 { width: 400px; height: 400px; background: rgba(125,211,252,0.15); bottom: -100px; right: -80px; animation-duration: 10s; animation-delay: -3s; }
+.orb-3 { width: 300px; height: 300px; background: rgba(251,191,36,0.1); top: 40%; left: 50%; animation-duration: 18s; animation-delay: -6s; }
+
+@keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to   { transform: translate(30px, 40px) scale(1.05); }
+}
+
+/* ── Layout ────────────────────────────────────── */
+.app-wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+    animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Glass ─────────────────────────────────────── */
+.glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* ── Header ────────────────────────────────────── */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.logo-text {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--text);
+}
+
+/* ── Search ────────────────────────────────────── */
+.search-form { flex: 1; max-width: 400px; }
+
+.search-inner {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    padding: 0.4rem 0.4rem 0.4rem 1rem;
+    backdrop-filter: blur(10px);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-inner:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(167,139,250,0.2);
+}
+
+.search-inner input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    min-width: 0;
+}
+
+.search-inner input::placeholder { color: var(--muted); }
+
+.search-inner button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.5rem 1.2rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+}
+.search-inner button:hover  { opacity: 0.85; }
+.search-inner button:active { transform: scale(0.95); }
+
+/* ── Error ─────────────────────────────────────── */
+.error-banner {
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: #fca5a5;
+    border-radius: 12px;
+    padding: 0.75rem 1.2rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    backdrop-filter: blur(10px);
+}
+
+/* ── Current Weather ───────────────────────────── */
+.current-weather {
+    border-radius: 24px;
+    padding: 2rem 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.current-location {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+}
+
+.current-temp {
+    font-size: clamp(3.5rem, 9vw, 5.5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+}
+
+.temp-unit {
+    font-size: 0.4em;
+    font-weight: 300;
+    color: var(--muted);
+    vertical-align: super;
+}
+
+.current-desc {
+    color: var(--accent2);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.3rem 0 1.5rem;
+}
+
+.current-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.meta-item { display: flex; flex-direction: column; gap: 0.1rem; }
+.meta-label { font-size: 0.72rem; color: var(--muted); }
+.meta-value { font-size: 1rem; font-weight: 700; font-family: 'Space Mono', monospace; }
+.meta-divider { width: 1px; height: 30px; background: var(--glass-border); }
+
+.weather-emoji {
+    font-size: clamp(4rem, 10vw, 6rem);
+    line-height: 1;
+    filter: drop-shadow(0 4px 20px rgba(255,255,255,0.2));
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+}
+
+/* ── Forecast ──────────────────────────────────── */
+.forecast-section { margin-top: 0.5rem; }
+
+.section-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--muted);
+    margin-bottom: 0.9rem;
+    font-family: 'Space Mono', monospace;
+}
+
+.forecast-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.forecast-card {
+    border-radius: 18px;
+    padding: 1.2rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.forecast-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.35);
+}
+
+.forecast-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.forecast-emoji { font-size: 2.2rem; line-height: 1; }
+
+.forecast-temp {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.forecast-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.3;
+}
+
+.forecast-details {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-top: 0.15rem;
+}
+
+/* ── Empty State ───────────────────────────────── */
+.empty-state {
+    text-align: center;
+    padding: 7rem 2rem;
+    color: var(--muted);
+}
+
+.empty-emoji {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: float 5s ease-in-out infinite;
+}
+
+.empty-state p { font-size: 1rem; letter-spacing: 0.02em; }
+
+/* ── Responsive ────────────────────────────────── */
+@media (max-width: 580px) {
+    .current-weather { flex-direction: column-reverse; padding: 1.5rem; text-align: center; }
+    .current-meta { justify-content: center; }
+    .header { flex-direction: column; align-items: stretch; }
+    .search-form { max-width: 100%; }
 }

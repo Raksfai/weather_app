@@ -4,26 +4,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'weather/style.css' %}">
-    <title>Weather App</title>
+    <title>Atmos — Weather</title>
 </head>
-<body class="geometric-background">
-    <h1>Weather</h1>
-    <form action="" method="get">
-        <input type="text" name="city" placeholder="Input city...">
-        <button type="submit">Get Weather</button>
-    </form>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
-    <div>
-        <p>Country: {{ country }}</p>
-        <p>City: {{ city }}</p>
-        <p>Temperature: {{ temp }}°C</p>
-        <p>Feels Like: {{ feels_like }}°C</p>
-        <p>Humidity: {{ humidity }}%</p>
-        <p>Pressure: {{ pressure }} hPa</p>
-        <p>Description: {{ description }}</p>
+<body>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="app-wrapper">
+
+        <header class="header">
+            <div class="logo">
+                <span>🌤</span>
+                <span class="logo-text">ATMOS</span>
+            </div>
+            <form class="search-form" action="" method="get">
+                <div class="search-inner">
+                    <span>🔍</span>
+                    <input
+                        type="text"
+                        name="city"
+                        placeholder="Search city..."
+                        value="{{ city|default:'' }}"
+                        autocomplete="off"
+                    >
+                    <button type="submit">Go</button>
+                </div>
+            </form>
+        </header>
+
+        {% if error %}
+        <div class="error-banner">⚠️ {{ error }}</div>
+        {% endif %}
+
+        {% if city %}
+        <section class="current-weather glass">
+            <div class="current-left">
+                <div class="current-location">📍 {{ city }}, {{ country }}</div>
+                <div class="current-temp">{{ temp|floatformat:1 }}<span class="temp-unit">°C</span></div>
+                <div class="current-desc">{{ description|capfirst }}</div>
+                <div class="current-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">🌡 Feels like</span>
+                        <span class="meta-value">{{ feels_like|floatformat:1 }}°C</span>
+                    </div>
+                    <div class="meta-divider"></div>
+                    <div class="meta-item">
+                        <span class="meta-label">💧 Humidity</span>
+                        <span class="meta-value">{{ humidity }}%</span>
+                    </div>
+                    <div class="meta-divider"></div>
+                    <div class="meta-item">
+                        <span class="meta-label">🧭 Pressure</span>
+                        <span class="meta-value">{{ pressure }} hPa</span>
+                    </div>
+                </div>
+            </div>
+            <div class="current-right">
+                <div class="weather-emoji">{{ weather_emoji }}</div>
+            </div>
+        </section>
+
+        {% if forecast %}
+        <section class="forecast-section">
+            <h2 class="section-title">5-Day Forecast</h2>
+            <div class="forecast-grid">
+                {% for item in forecast %}
+                <div class="forecast-card glass">
+                    <div class="forecast-date">{{ item.date }}</div>
+                    <div class="forecast-emoji">{{ item.emoji }}</div>
+                    <div class="forecast-temp">{{ item.temp|floatformat:1 }}°C</div>
+                    <div class="forecast-desc">{{ item.description|capfirst }}</div>
+                    <div class="forecast-details">
+                        <span>💧 {{ item.humidity }}%</span>
+                        <span>🌡 {{ item.feels_like|floatformat:0 }}°</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-emoji">🌍</div>
+            <p>Enter a city to see the weather</p>
+        </div>
+        {% endif %}
+
     </div>
 </body>
 </html>

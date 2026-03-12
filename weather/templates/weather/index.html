@@ -23,6 +23,10 @@
                 <span>🌤</span>
                 <span class="logo-text">ATMOS</span>
             </div>
+            <div class="favorites-dropdown">
+                <button id="favorites-btn" class="btn btn-ghost">⭐ Favorites</button>
+                <div id="favorites-list"></div>
+            </div>
             <form class="search-form" action="" method="get">
                 <div class="search-inner">
                     <span>🔍</span>
@@ -33,7 +37,7 @@
                         value="{{ city|default:'' }}"
                         autocomplete="off"
                     >
-                    <button type="submit">Go</button>
+                    <button class="btn btn-primary" type="submit">Go</button>
                 </div>
             </form>
         </header>
@@ -45,7 +49,10 @@
         {% if city %}
         <section class="current-weather glass">
             <div class="current-left">
-                <div class="current-location">📍 {{ city }}, {{ country }}</div>
+                <div class="current-location">
+                    📍 {{ city }}, {{ country }} <button class="btn btn-ghost" onclick="addFavorite('{{ city }}')" id="fav-btn">⭐ Add to favorites</button>
+                </div>
+                
                 <div class="current-temp">{{ temp|floatformat:1 }}<span class="temp-unit">°C</span></div>
                 <div class="current-desc">{{ description|capfirst }}</div>
                 <div class="current-meta">
@@ -96,7 +103,7 @@
             <p>Enter a city to see the weather</p>
         </div>
         {% endif %}
-
     </div>
 </body>
+<script src="{% static 'weather/favorites.js' %}"></script>
 </html>

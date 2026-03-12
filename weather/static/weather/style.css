@@ -319,7 +319,7 @@ body {
 .btn-ghost    { background: rgba(255,255,255,0.1); color: var(--text); border: 1px solid var(--glass-border); }
 
 #favorites-list {
-    display: none;  /* скрыт по умолчанию */
+    display: none;  /* схований за замовчуванням */
     position: absolute;
     margin-top: 0.5rem;
     top: 100%;

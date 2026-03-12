@@ -1,26 +1,26 @@
-from multiprocessing import context
-
 import requests
 from django.shortcuts import render
 from core.settings import WEATHER_API_KEY
 
+
 def get_weather_emoji(weather_id):
     if weather_id < 300:
-        return "⛈️"   # гроза
+        return "⛈️"  # гроза
     elif weather_id < 400:
-        return "🌧️"   # моросить
+        return "🌧️"  # моросить
     elif weather_id < 600:
-        return "🌧️"   # дощ
+        return "🌧️"  # дощ
     elif weather_id < 700:
-        return "❄️"   # сніг
+        return "❄️"  # сніг
     elif weather_id < 800:
-        return "🌫️"   # туман
+        return "🌫️"  # туман
     elif weather_id == 800:
-        return "☀️"   # ясно
+        return "☀️"  # ясно
     elif weather_id < 803:
-        return "⛅️"   # невелика хмарність
+        return "⛅️"  # невелика хмарність
     else:
-        return "☁️"   # хмарно
+        return "☁️"  # хмарно
+
 
 def index(request):
     data = request.GET.get("city")
@@ -45,28 +45,34 @@ def index(request):
         "description": weather_data["weather"][0]["description"],
     }
     print("\n(TEST)Main weather data:", context.get("main", {}))
- 
+
     ####################
 
     weather_forecast = f"https://api.openweathermap.org/data/2.5/forecast?q={data}&appid={WEATHER_API_KEY}&units=metric"
     response = requests.get(weather_forecast)
     forecast_data = response.json()
     print("\n(TEST)Forecast data:", forecast_data)
-    filtered_forecast = [item for item in forecast_data["list"] if item["dt_txt"].endswith("12:00:00")]
+    filtered_forecast = [
+        item for item in forecast_data["list"] if item["dt_txt"].endswith("12:00:00")
+    ]
 
     print("\n(TEST)Filtered forecast data:", filtered_forecast)
 
     forecast_context = []
 
     for item in filtered_forecast:
-        forecast_context.append({
-        "date": item["dt_txt"].split(" ")[0].split("-")[2] + "." + item["dt_txt"].split(" ")[0].split("-")[1],
-        "temp": item["main"]["temp"],
-        "feels_like": item["main"]["feels_like"],
-        "humidity": item["main"]["humidity"],
-        "pressure": item["main"]["pressure"],
-        "description": item["weather"][0]["description"],
-        })
-    
+        forecast_context.append(
+            {
+                "date": item["dt_txt"].split(" ")[0].split("-")[2]
+                + "."
+                + item["dt_txt"].split(" ")[0].split("-")[1],
+                "temp": item["main"]["temp"],
+                "feels_like": item["main"]["feels_like"],
+                "humidity": item["main"]["humidity"],
+                "pressure": item["main"]["pressure"],
+                "description": item["weather"][0]["description"],
+            }
+        )
+
     context["forecast"] = forecast_context
     return render(request, "weather/index.html", context)

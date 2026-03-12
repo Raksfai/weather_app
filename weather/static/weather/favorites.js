@@ -24,7 +24,7 @@ function renderFavorites() {
     const container = document.getElementById("favorites-list")
     container.innerHTML = ""
     if (favorites.length === 0) {
-        container.innerHTML = "<p>No favorites yet.</p>"
+        container.innerHTML = "<div class='favorite-item'><p>No favorites yet.</p></div>"
         return
     }
     favorites.forEach(city => {

@@ -10,7 +10,20 @@
     <link rel="stylesheet" href="{% static 'weather/style.css' %}">
     <title>Atmos — Weather</title>
 </head>
-<body>
+<body class="{% if weather_theme %}weather-{{ weather_theme }}{% else %}weather-default{% endif %}">
+
+    <div class="weather-scene" aria-hidden="true">
+        <div class="sun-rays"></div>
+        <span class="cloud cloud-1"></span>
+        <span class="cloud cloud-2"></span>
+        <span class="cloud cloud-3"></span>
+        <span class="rain rain-1"></span>
+        <span class="rain rain-2"></span>
+        <span class="rain rain-3"></span>
+        <span class="snow snow-1"></span>
+        <span class="snow snow-2"></span>
+        <span class="snow snow-3"></span>
+    </div>
 
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
@@ -77,12 +90,36 @@
             </div>
         </section>
 
+        {% if chart_data %}
+        <section class="chart-section glass">
+            <div class="chart-header">
+                <div>
+                    <h2 class="section-title">Today Details</h2>
+                    <p id="chart-title" class="chart-title">Temperature & humidity</p>
+                </div>
+                <div class="chart-legend" aria-hidden="true">
+                    <span class="legend-temp">Temperature</span>
+                    <span class="legend-humidity">Humidity</span>
+                </div>
+            </div>
+            <div class="chart-wrap">
+                <canvas id="weather-chart"></canvas>
+            </div>
+        </section>
+        {{ chart_data|json_script:"weather-chart-data" }}
+        {{ selected_chart_date|json_script:"selected-chart-date" }}
+        {% endif %}
+
         {% if forecast %}
         <section class="forecast-section">
             <h2 class="section-title">5-Day Forecast</h2>
             <div class="forecast-grid">
                 {% for item in forecast %}
-                <div class="forecast-card glass">
+                <button
+                    class="forecast-card glass{% if item.date_key == selected_chart_date %} is-active{% endif %}"
+                    type="button"
+                    data-date="{{ item.date_key }}"
+                >
                     <div class="forecast-date">{{ item.date }}</div>
                     <div class="forecast-emoji">{{ item.emoji }}</div>
                     <div class="forecast-temp">{{ item.temp|floatformat:1 }}°C</div>
@@ -91,7 +128,7 @@
                         <span>💧 {{ item.humidity }}%</span>
                         <span>🌡 {{ item.feels_like|floatformat:0 }}°</span>
                     </div>
-                </div>
+                </button>
                 {% endfor %}
             </div>
         </section>
@@ -104,6 +141,8 @@
         </div>
         {% endif %}
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'weather/weather-chart.js' %}"></script>
+    <script src="{% static 'weather/favorites.js' %}"></script>
 </body>
-<script src="{% static 'weather/favorites.js' %}"></script>
 </html>

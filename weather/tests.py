@@ -12,16 +12,16 @@ class MockWeatherResponse:
         return self.payload
 
 
-def current_weather_payload(weather_id=800):
+def current_weather_payload(weather_id=800, name="Kyiv", country="UA", temp=21.4):
     return {
         "cod": 200,
         "dt": int(datetime(2026, 5, 14, 9, 30, tzinfo=UTC).timestamp()),
         "timezone": 0,
-        "name": "Kyiv",
-        "sys": {"country": "UA"},
+        "name": name,
+        "sys": {"country": country},
         "main": {
-            "temp": 21.4,
-            "feels_like": 22.0,
+            "temp": temp,
+            "feels_like": temp + 0.6,
             "humidity": 61,
             "pressure": 1012,
         },
@@ -83,6 +83,12 @@ class WeatherIndexTests(TestCase):
         self.assertContains(response, 'class="forecast-card glass is-active"')
         self.assertContains(response, 'data-date="2026-05-14"')
         self.assertContains(response, 'id="weather-chart-data"')
+        self.assertContains(response, 'id="compare-open-btn"')
+        self.assertContains(response, 'id="compare-toggle-btn"')
+        self.assertContains(response, 'id="compare-temp-chart"')
+        self.assertContains(response, 'id="compare-humidity-chart"')
+        self.assertContains(response, 'id="compare-pressure-chart"')
+        self.assertContains(response, "weather/compare.js")
         self.assertContains(response, "weather-clear")
 
     @patch("weather.views.requests.get")
@@ -136,3 +142,87 @@ class WeatherIndexTests(TestCase):
         self.assertEqual(response.context["error"], "City wasn't found")
         self.assertContains(response, "City wasn&#x27;t found")
         self.assertEqual(mock_get.call_count, 1)
+
+
+@override_settings(
+    STORAGES={
+        "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"
+        },
+    }
+)
+class WeatherCompareTests(TestCase):
+    def get_compare_response(self, city):
+        if city == "Missing":
+            return MockWeatherResponse({"cod": "404"})
+        country = "GB" if city == "London" else "UA"
+        temp = {
+            "Kyiv": 21.4,
+            "London": 16.2,
+            "Tokyo": 25.8,
+            "Paris": 18.9,
+            "Berlin": 17.4,
+        }.get(city, 12.0)
+        return MockWeatherResponse(
+            current_weather_payload(name=city, country=country, temp=temp)
+        )
+
+    @patch("weather.views.requests.get")
+    def test_compare_returns_successful_city_json(self, mock_get):
+        mock_get.side_effect = lambda _url, params, timeout: self.get_compare_response(
+            params["q"]
+        )
+
+        response = self.client.get("/compare/", {"cities": "Kyiv,London"})
+        payload = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([city["name"] for city in payload["cities"]], ["Kyiv", "London"])
+        self.assertEqual(payload["cities"][0]["country"], "UA")
+        self.assertEqual(payload["cities"][0]["emoji"], "☀️")
+        self.assertEqual(payload["cities"][0]["theme"], "clear")
+        self.assertEqual(payload["errors"], [])
+
+    @patch("weather.views.requests.get")
+    def test_compare_dedupes_and_caps_cities_to_five(self, mock_get):
+        mock_get.side_effect = lambda _url, params, timeout: self.get_compare_response(
+            params["q"]
+        )
+
+        response = self.client.get(
+            "/compare/",
+            {"cities": "Kyiv,London,kyiv,Tokyo,Paris,Berlin,Rome"},
+        )
+        payload = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [city["name"] for city in payload["cities"]],
+            ["Kyiv", "London", "Tokyo", "Paris", "Berlin"],
+        )
+        self.assertEqual(mock_get.call_count, 5)
+
+    @patch("weather.views.requests.get")
+    def test_compare_returns_partial_results_for_invalid_city(self, mock_get):
+        mock_get.side_effect = lambda _url, params, timeout: self.get_compare_response(
+            params["q"]
+        )
+
+        response = self.client.get("/compare/", {"cities": "Kyiv,Missing,London"})
+        payload = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual([city["name"] for city in payload["cities"]], ["Kyiv", "London"])
+        self.assertEqual(
+            payload["errors"],
+            [{"city": "Missing", "message": "City wasn't found"}],
+        )
+
+    @patch("weather.views.requests.get")
+    def test_compare_empty_cities_returns_400(self, mock_get):
+        response = self.client.get("/compare/")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": "No cities provided"})
+        mock_get.assert_not_called()

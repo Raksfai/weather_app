@@ -1,9 +1,14 @@
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 
 import requests
+from django.http import JsonResponse
 from django.shortcuts import render
 from core.settings import WEATHER_API_KEY
+
+
+COMPARE_LIMIT = 5
 
 
 def get_weather_theme(weather_id):
@@ -38,6 +43,56 @@ def get_weather_emoji(weather_id):
     if weather_id < 803:
         return "⛅️"  # невелика хмарність
     return "☁️"  # хмарно
+
+
+def parse_compare_cities(raw_cities):
+    cities = []
+    seen = set()
+    for city in raw_cities.split(","):
+        normalized_city = city.strip()
+        city_key = normalized_city.casefold()
+        if normalized_city and city_key not in seen:
+            cities.append(normalized_city)
+            seen.add(city_key)
+        if len(cities) == COMPARE_LIMIT:
+            break
+    return cities
+
+
+def build_current_weather_context(weather_data):
+    weather_id = weather_data["weather"][0]["id"]
+    return {
+        "name": weather_data["name"],
+        "country": weather_data["sys"]["country"],
+        "temp": weather_data["main"]["temp"],
+        "feels_like": weather_data["main"]["feels_like"],
+        "humidity": weather_data["main"]["humidity"],
+        "pressure": weather_data["main"]["pressure"],
+        "description": weather_data["weather"][0]["description"],
+        "emoji": get_weather_emoji(weather_id),
+        "theme": get_weather_theme(weather_id),
+    }
+
+
+def fetch_compare_city(city):
+    try:
+        response = requests.get(
+            "https://api.openweathermap.org/data/2.5/weather",
+            params={
+                "q": city,
+                "appid": WEATHER_API_KEY,
+                "units": "metric",
+            },
+            timeout=10,
+        )
+        weather_data = response.json()
+    except requests.RequestException:
+        return {"city": city, "message": "Weather service is unavailable"}
+
+    if str(weather_data.get("cod")) != "200":
+        return {"city": city, "message": "City wasn't found"}
+
+    return build_current_weather_context(weather_data)
 
 
 def get_local_datetime(timestamp, timezone_offset):
@@ -180,3 +235,22 @@ def index(request):
     context["chart_data"] = chart_data
     context["selected_chart_date"] = selected_chart_date
     return render(request, "weather/index.html", context)
+
+
+def compare(request):
+    cities = parse_compare_cities(request.GET.get("cities", ""))
+    if not cities:
+        return JsonResponse({"error": "No cities provided"}, status=400)
+
+    with ThreadPoolExecutor(max_workers=min(len(cities), COMPARE_LIMIT)) as executor:
+        results = list(executor.map(fetch_compare_city, cities))
+
+    city_results = []
+    errors = []
+    for result in results:
+        if "message" in result:
+            errors.append(result)
+        else:
+            city_results.append(result)
+
+    return JsonResponse({"cities": city_results, "errors": errors})

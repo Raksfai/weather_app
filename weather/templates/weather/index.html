@@ -40,6 +40,9 @@
                 <button id="favorites-btn" class="btn btn-ghost">⭐ Favorites</button>
                 <div id="favorites-list"></div>
             </div>
+            <button id="compare-open-btn" class="btn btn-ghost compare-header-btn" type="button" disabled>
+                ⚖️ Compare (0)
+            </button>
             <form class="search-form" action="" method="get">
                 <div class="search-inner">
                     <span>🔍</span>
@@ -63,7 +66,18 @@
         <section class="current-weather glass">
             <div class="current-left">
                 <div class="current-location">
-                    📍 {{ city }}, {{ country }} <button class="btn btn-ghost" onclick="addFavorite('{{ city }}')" id="fav-btn">⭐ Add to favorites</button>
+                    📍 {{ city }}, {{ country }}
+                    <div class="current-actions">
+                        <button class="btn btn-ghost" onclick="addFavorite('{{ city|escapejs }}')" id="fav-btn">⭐ Add to favorites</button>
+                        <button
+                            class="btn btn-ghost"
+                            id="compare-toggle-btn"
+                            type="button"
+                            data-city="{{ city }}"
+                        >
+                            ⚖️ Add to compare
+                        </button>
+                    </div>
                 </div>
                 
                 <div class="current-temp">{{ temp|floatformat:1 }}<span class="temp-unit">°C</span></div>
@@ -141,8 +155,57 @@
         </div>
         {% endif %}
     </div>
+
+    <div id="compare-modal" class="modal-backdrop" aria-hidden="true">
+        <section class="compare-modal glass" role="dialog" aria-modal="true" aria-labelledby="compare-title">
+            <div class="compare-modal-header">
+                <div>
+                    <h2 id="compare-title" class="compare-title">City comparison</h2>
+                    <p id="compare-subtitle" class="compare-subtitle">Select at least two cities</p>
+                </div>
+                <button id="compare-close-btn" class="btn btn-ghost modal-close-btn" type="button" aria-label="Close compare modal">×</button>
+            </div>
+
+            <div id="compare-message" class="compare-message" hidden></div>
+            <div id="compare-errors" class="compare-errors"></div>
+
+            <div id="compare-cards" class="compare-cards"></div>
+
+            <div class="compare-chart-grid">
+                <div class="compare-chart-wrap">
+                    <h3>Temperature</h3>
+                    <canvas id="compare-temp-chart"></canvas>
+                </div>
+                <div class="compare-chart-wrap">
+                    <h3>Humidity</h3>
+                    <canvas id="compare-humidity-chart"></canvas>
+                </div>
+                <div class="compare-chart-wrap">
+                    <h3>Pressure</h3>
+                    <canvas id="compare-pressure-chart"></canvas>
+                </div>
+            </div>
+
+            <div class="compare-table-wrap">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th><button type="button" data-sort="name">City</button></th>
+                            <th><button type="button" data-sort="temp">Temp</button></th>
+                            <th><button type="button" data-sort="humidity">Humidity</button></th>
+                            <th><button type="button" data-sort="pressure">Pressure</button></th>
+                            <th>Weather</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="compare-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'weather/weather-chart.js' %}"></script>
+    <script src="{% static 'weather/compare.js' %}"></script>
     <script src="{% static 'weather/favorites.js' %}"></script>
 </body>
 </html>

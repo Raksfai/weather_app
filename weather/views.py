@@ -82,6 +82,95 @@ def get_weather_emoji(weather_id):
     return "☁️"  # хмарно
 
 
+def build_outfit_recommendation(temp, feels_like, humidity, weather_id):
+    comfort_temp = float(feels_like)
+    items = []
+
+    if comfort_temp <= 0:
+        title = _("Bundle up")
+        summary = _("Freezing conditions call for serious insulation.")
+        items.extend(
+            [
+                _("Wear a heavy winter coat."),
+                _("Add a warm hat, scarf, and gloves."),
+                _("Choose insulated footwear."),
+            ]
+        )
+    elif comfort_temp <= 8:
+        title = _("Dress warm")
+        summary = _("It will feel cold, so keep a warm outer layer ready.")
+        items.extend(
+            [
+                _("Wear a warm coat."),
+                _("Use a sweater or hoodie as a middle layer."),
+                _("Choose closed shoes."),
+            ]
+        )
+    elif comfort_temp <= 15:
+        title = _("Use a light jacket")
+        summary = _("Mild but cool weather is best handled with layers.")
+        items.extend(
+            [
+                _("Wear a jacket or sweater."),
+                _("Keep a removable layer for changing conditions."),
+                _("Long pants will feel more comfortable."),
+            ]
+        )
+    elif comfort_temp <= 22:
+        title = _("Keep it light")
+        summary = _("Comfortable weather, but a light layer may still help.")
+        items.extend(
+            [
+                _("Wear a light layer or long-sleeve shirt."),
+                _("Comfortable everyday shoes are enough."),
+                _("Carry a thin jacket if you will be out late."),
+            ]
+        )
+    else:
+        title = _("Stay cool")
+        summary = _("Warm weather favors light, breathable clothing.")
+        items.extend(
+            [
+                _("Wear light breathable clothes."),
+                _("Choose comfortable light shoes."),
+                _("Take water if you will be outside for a while."),
+            ]
+        )
+
+    if weather_id < 300:
+        items.extend(
+            [
+                _("Add a waterproof outer layer."),
+                _("Take an umbrella and avoid exposed routes."),
+            ]
+        )
+    elif weather_id < 600:
+        items.extend(
+            [
+                _("Take an umbrella."),
+                _("Wear a waterproof jacket or shoes."),
+            ]
+        )
+    elif weather_id < 700:
+        items.extend(
+            [
+                _("Wear warm waterproof boots."),
+                _("Use gloves for extra warmth."),
+            ]
+        )
+    elif weather_id < 800 or humidity >= 80:
+        items.append(_("Use breathable layers because damp air can feel colder."))
+
+    if temp >= 23 and humidity >= 70:
+        items.append(_("Prefer breathable fabrics and keep water nearby."))
+
+    return {
+        "title": title,
+        "summary": summary,
+        "items": list(dict.fromkeys(items)),
+    }
+
+
 def parse_compare_cities(raw_cities):
     cities = []
     seen = set()
@@ -193,6 +282,12 @@ def build_forecast_data(forecast_items, weather_data):
         weather_data["main"]["humidity"],
     )
     current_weather_id = weather_data["weather"][0]["id"]
+    current_outfit_recommendation = build_outfit_recommendation(
+        weather_data["main"]["temp"],
+        weather_data["main"]["feels_like"],
+        weather_data["main"]["humidity"],
+        current_weather_id,
+    )
 
     chart_data = {}
     for date_value, items in forecast_by_date.items():
@@ -204,12 +299,23 @@ def build_forecast_data(forecast_items, weather_data):
         if date_value == current_date:
             points.insert(0, current_point)
         points.sort(key=get_time_sort_value)
+        outfit_recommendation = (
+            current_outfit_recommendation
+            if date_value == current_date
+            else build_outfit_recommendation(
+                daily_item["temp"],
+                daily_item["feels_like"],
+                daily_item["humidity"],
+                daily_item["weather_id"],
+            )
+        )
         chart_data[date_value] = {
             "title": _("Weather chart for %(date)s")
             % {"date": format_display_date(date_value)},
             "theme": get_weather_theme(
                 current_weather_id if date_value == current_date else daily_item["weather_id"]
             ),
+            "outfit_recommendation": outfit_recommendation,
             "points": points,
         }
 
@@ -218,6 +324,7 @@ def build_forecast_data(forecast_items, weather_data):
             "title": _("Weather chart for %(date)s")
             % {"date": format_display_date(current_date)},
             "theme": get_weather_theme(current_weather_id),
+            "outfit_recommendation": current_outfit_recommendation,
             "points": [current_point],
         }
 
@@ -276,6 +383,12 @@ def index(request):
         "description": weather_data["weather"][0]["description"],
         "weather_emoji": get_weather_emoji(weather_id),
         "weather_theme": get_weather_theme(weather_id),
+        "outfit_recommendation": build_outfit_recommendation(
+            weather_data["main"]["temp"],
+            weather_data["main"]["feels_like"],
+            weather_data["main"]["humidity"],
+            weather_id,
+        ),
     }
 
     weather_forecast = "https://api.openweathermap.org/data/2.5/forecast"

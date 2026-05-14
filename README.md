@@ -1,6 +1,8 @@
 # Atmos Weather App
 
-Atmos is a Django weather dashboard that shows current weather, a 5-day forecast, interactive charts, animated weather backgrounds, favorites, city comparison, and multilingual UI.
+English | [Українська](README.uk.md)
+
+Atmos is a Django weather dashboard that shows current weather, practical outfit advice, a 5-day forecast, interactive charts, animated weather backgrounds, favorites, city comparison, and multilingual UI.
 
 The app uses OpenWeatherMap for weather data and keeps lightweight user state, such as favorites and compared cities, in browser `localStorage`.
 
@@ -8,9 +10,10 @@ The app uses OpenWeatherMap for weather data and keeps lightweight user state, s
 
 - Search current weather by city.
 - Display temperature, feels-like temperature, humidity, pressure, country, description, and weather emoji.
+- Show outfit recommendations based on feels-like temperature, humidity, and weather condition.
 - Show a 5-day forecast from OpenWeatherMap.
 - Show an interactive Chart.js graph for temperature and humidity.
-- Switch the chart by clicking forecast day cards.
+- Switch the chart and outfit advice by clicking forecast day cards.
 - Change animated page background by selected day weather condition.
 - Save favorite cities in `localStorage`.
 - Compare up to 5 cities side by side.
@@ -117,11 +120,23 @@ http://127.0.0.1:8000/
 1. Enter a city name in the search box.
 2. View current weather and the 5-day forecast.
 3. Use the chart to inspect temperature and humidity.
-4. Click forecast cards to switch chart data and background theme.
+4. Click forecast cards to switch chart data, outfit advice, and background theme.
 5. Click `⭐ Add to favorites` to save the city locally.
 6. Click `⚖️ Add to compare` to add the city to the comparison list.
 7. Add at least two cities, then click `⚖️ Compare (N)` to open the comparison modal.
 8. Use the language selector in the header to switch the UI language.
+
+## Outfit Advice
+
+The outfit panel gives compact clothing recommendations for the currently selected weather day.
+
+Recommendation inputs:
+
+- Feels-like temperature for comfort bands.
+- Current or forecast humidity.
+- OpenWeatherMap condition ID for rain, snow, thunderstorm, mist, and clear/cloudy variants.
+
+On first load, the panel is based on the current weather. When a forecast card is selected, the panel updates to that forecast day using the same representative point as the forecast card, usually `12:00` when it is available.
 
 ## Weather Backgrounds
 
@@ -204,6 +219,7 @@ Current tests cover:
 - Successful weather page rendering.
 - Current weather plus forecast chart data.
 - Forecast grouping by date.
+- Outfit recommendations for current weather and selected forecast days.
 - Error state for unknown city.
 - City comparison JSON endpoint.
 - Compare deduplication and 5-city limit.

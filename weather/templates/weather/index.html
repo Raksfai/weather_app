@@ -77,45 +77,58 @@
         {% endif %}
 
         {% if city %}
-        <section class="current-weather glass">
-            <div class="current-left">
-                <div class="current-location">
-                    📍 {{ city }}, {{ country }}
-                    <div class="current-actions">
-                        <button class="btn btn-ghost" onclick="addFavorite('{{ city|escapejs }}')" id="fav-btn">⭐ {% trans "Add to favorites" %}</button>
-                        <button
-                            class="btn btn-ghost"
-                            id="compare-toggle-btn"
-                            type="button"
-                            data-city="{{ city }}"
-                        >
-                            ⚖️ {% trans "Add to compare" %}
-                        </button>
+        <section class="current-dashboard">
+            <div class="current-weather glass">
+                <div class="current-left">
+                    <div class="current-location">
+                        📍 {{ city }}, {{ country }}
+                        <div class="current-actions">
+                            <button class="btn btn-ghost" onclick="addFavorite('{{ city|escapejs }}')" id="fav-btn">⭐ {% trans "Add to favorites" %}</button>
+                            <button
+                                class="btn btn-ghost"
+                                id="compare-toggle-btn"
+                                type="button"
+                                data-city="{{ city }}"
+                            >
+                                ⚖️ {% trans "Add to compare" %}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="current-temp">{{ temp|floatformat:1 }}<span class="temp-unit">°C</span></div>
+                    <div class="current-desc">{{ description|capfirst }}</div>
+                    <div class="current-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">🌡 {% trans "Feels like" %}</span>
+                            <span class="meta-value">{{ feels_like|floatformat:1 }}°C</span>
+                        </div>
+                        <div class="meta-divider"></div>
+                        <div class="meta-item">
+                            <span class="meta-label">💧 {% trans "Humidity" %}</span>
+                            <span class="meta-value">{{ humidity }}%</span>
+                        </div>
+                        <div class="meta-divider"></div>
+                        <div class="meta-item">
+                            <span class="meta-label">🧭 {% trans "Pressure" %}</span>
+                            <span class="meta-value">{{ pressure }} hPa</span>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="current-temp">{{ temp|floatformat:1 }}<span class="temp-unit">°C</span></div>
-                <div class="current-desc">{{ description|capfirst }}</div>
-                <div class="current-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">🌡 {% trans "Feels like" %}</span>
-                        <span class="meta-value">{{ feels_like|floatformat:1 }}°C</span>
-                    </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <span class="meta-label">💧 {% trans "Humidity" %}</span>
-                        <span class="meta-value">{{ humidity }}%</span>
-                    </div>
-                    <div class="meta-divider"></div>
-                    <div class="meta-item">
-                        <span class="meta-label">🧭 {% trans "Pressure" %}</span>
-                        <span class="meta-value">{{ pressure }} hPa</span>
-                    </div>
+                <div class="current-right">
+                    <div class="weather-emoji">{{ weather_emoji }}</div>
                 </div>
             </div>
-            <div class="current-right">
-                <div class="weather-emoji">{{ weather_emoji }}</div>
-            </div>
+
+            <aside class="outfit-card glass">
+                <div class="outfit-kicker">{% trans "Outfit advice" %}</div>
+                <h2 id="outfit-title">{{ outfit_recommendation.title }}</h2>
+                <p id="outfit-summary">{{ outfit_recommendation.summary }}</p>
+                <ul id="outfit-list" class="outfit-list">
+                    {% for item in outfit_recommendation.items %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </aside>
         </section>
 
         {% if chart_data %}

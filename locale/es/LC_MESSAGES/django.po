@@ -116,3 +116,105 @@ msgstr "seleccionadas"
 
 msgid "Comparison is unavailable."
 msgstr "La comparación no está disponible."
+
+msgid "Outfit advice"
+msgstr "Consejo de ropa"
+
+msgid "Bundle up"
+msgstr "Abrígate bien"
+
+msgid "Freezing conditions call for serious insulation."
+msgstr "El frío intenso requiere buen aislamiento."
+
+msgid "Wear a heavy winter coat."
+msgstr "Usa un abrigo grueso de invierno."
+
+msgid "Add a warm hat, scarf, and gloves."
+msgstr "Añade gorro, bufanda y guantes cálidos."
+
+msgid "Choose insulated footwear."
+msgstr "Elige calzado aislante."
+
+msgid "Dress warm"
+msgstr "Vístete abrigado"
+
+msgid "It will feel cold, so keep a warm outer layer ready."
+msgstr "Se sentirá frío, así que usa una capa exterior cálida."
+
+msgid "Wear a warm coat."
+msgstr "Usa un abrigo cálido."
+
+msgid "Use a sweater or hoodie as a middle layer."
+msgstr "Usa un suéter o sudadera como capa intermedia."
+
+msgid "Choose closed shoes."
+msgstr "Elige zapatos cerrados."
+
+msgid "Use a light jacket"
+msgstr "Usa una chaqueta ligera"
+
+msgid "Mild but cool weather is best handled with layers."
+msgstr "El tiempo templado pero fresco se maneja mejor con capas."
+
+msgid "Wear a jacket or sweater."
+msgstr "Usa una chaqueta o suéter."
+
+msgid "Keep a removable layer for changing conditions."
+msgstr "Ten una capa fácil de quitar si cambia el tiempo."
+
+msgid "Long pants will feel more comfortable."
+msgstr "Los pantalones largos serán más cómodos."
+
+msgid "Keep it light"
+msgstr "Mantén ropa ligera"
+
+msgid "Comfortable weather, but a light layer may still help."
+msgstr "Tiempo cómodo, aunque una capa ligera puede ayudar."
+
+msgid "Wear a light layer or long-sleeve shirt."
+msgstr "Usa una capa ligera o camisa de manga larga."
+
+msgid "Comfortable everyday shoes are enough."
+msgstr "Un calzado cómodo de diario es suficiente."
+
+msgid "Carry a thin jacket if you will be out late."
+msgstr "Lleva una chaqueta fina si estarás fuera tarde."
+
+msgid "Stay cool"
+msgstr "Mantente fresco"
+
+msgid "Warm weather favors light, breathable clothing."
+msgstr "El calor favorece ropa ligera y transpirable."
+
+msgid "Wear light breathable clothes."
+msgstr "Usa ropa ligera y transpirable."
+
+msgid "Choose comfortable light shoes."
+msgstr "Elige zapatos ligeros y cómodos."
+
+msgid "Take water if you will be outside for a while."
+msgstr "Lleva agua si estarás fuera un rato."
+
+msgid "Add a waterproof outer layer."
+msgstr "Añade una capa exterior impermeable."
+
+msgid "Take an umbrella and avoid exposed routes."
+msgstr "Lleva paraguas y evita rutas expuestas."
+
+msgid "Take an umbrella."
+msgstr "Lleva un paraguas."
+
+msgid "Wear a waterproof jacket or shoes."
+msgstr "Usa chaqueta o calzado impermeable."
+
+msgid "Wear warm waterproof boots."
+msgstr "Usa botas cálidas e impermeables."
+
+msgid "Use gloves for extra warmth."
+msgstr "Usa guantes para más calor."
+
+msgid "Use breathable layers because damp air can feel colder."
+msgstr "Usa capas transpirables porque el aire húmedo puede sentirse más frío."
+
+msgid "Prefer breathable fabrics and keep water nearby."
+msgstr "Prefiere telas transpirables y ten agua cerca."

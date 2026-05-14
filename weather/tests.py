@@ -2,6 +2,9 @@ from datetime import UTC, datetime
 from unittest.mock import patch
 
 from django.test import TestCase, override_settings
+from django.utils.translation import override
+
+from weather.views import build_outfit_recommendation
 
 
 class MockWeatherResponse:
@@ -12,7 +15,17 @@ class MockWeatherResponse:
         return self.payload
 
 
-def current_weather_payload(weather_id=800, name="Kyiv", country="UA", temp=21.4):
+def current_weather_payload(
+    weather_id=800,
+    name="Kyiv",
+    country="UA",
+    temp=21.4,
+    feels_like=None,
+    humidity=61,
+):
+    if feels_like is None:
+        feels_like = temp + 0.6
+
     return {
         "cod": 200,
         "dt": int(datetime(2026, 5, 14, 9, 30, tzinfo=UTC).timestamp()),
@@ -21,12 +34,46 @@ def current_weather_payload(weather_id=800, name="Kyiv", country="UA", temp=21.4
         "sys": {"country": country},
         "main": {
             "temp": temp,
-            "feels_like": temp + 0.6,
-            "humidity": 61,
+            "feels_like": feels_like,
+            "humidity": humidity,
             "pressure": 1012,
         },
         "weather": [{"id": weather_id, "description": "clear sky"}],
     }
+
+
+class OutfitRecommendationTests(TestCase):
+    def test_freezing_weather_recommends_heavy_winter_clothing(self):
+        recommendation = build_outfit_recommendation(-3, -5, 50, 800)
+
+        self.assertEqual(recommendation["title"], "Bundle up")
+        self.assertIn("Wear a heavy winter coat.", recommendation["items"])
+        self.assertIn("Add a warm hat, scarf, and gloves.", recommendation["items"])
+
+    def test_rain_recommends_umbrella_and_waterproof_layer(self):
+        recommendation = build_outfit_recommendation(12, 11, 72, 500)
+
+        self.assertIn("Take an umbrella.", recommendation["items"])
+        self.assertIn("Wear a waterproof jacket or shoes.", recommendation["items"])
+
+    def test_snow_recommends_boots_and_gloves(self):
+        recommendation = build_outfit_recommendation(-1, -4, 80, 600)
+
+        self.assertIn("Wear warm waterproof boots.", recommendation["items"])
+        self.assertIn("Use gloves for extra warmth.", recommendation["items"])
+
+    def test_warm_humid_weather_recommends_breathable_clothes_and_water(self):
+        recommendation = build_outfit_recommendation(28, 30, 78, 800)
+
+        self.assertIn("Wear light breathable clothes.", recommendation["items"])
+        self.assertIn("Prefer breathable fabrics and keep water nearby.", recommendation["items"])
+
+    def test_outfit_recommendation_is_translated(self):
+        with override("ru"):
+            recommendation = build_outfit_recommendation(-3, -5, 50, 800)
+
+        self.assertEqual(recommendation["title"], "Утеплитесь")
+        self.assertIn("Наденьте теплую зимнюю куртку.", recommendation["items"])
 
 
 def forecast_item(date_time, temp, humidity, weather_id=801):
@@ -90,6 +137,16 @@ class WeatherIndexTests(TestCase):
         self.assertContains(response, 'id="compare-pressure-chart"')
         self.assertContains(response, 'id="language-select"')
         self.assertContains(response, 'id="weather-i18n"')
+        self.assertContains(response, 'id="outfit-title"')
+        self.assertContains(response, 'id="outfit-summary"')
+        self.assertContains(response, 'id="outfit-list"')
+        self.assertContains(response, "Outfit advice")
+        self.assertContains(response, "Keep it light")
+        self.assertIn("outfit_recommendation", response.context)
+        self.assertIn(
+            "outfit_recommendation",
+            response.context["chart_data"]["2026-05-14"],
+        )
         self.assertContains(response, "weather/compare.js")
         self.assertContains(response, "weather-clear")
         self.assertEqual(mock_get.call_args_list[0].kwargs["params"]["lang"], "en")
@@ -102,6 +159,25 @@ class WeatherIndexTests(TestCase):
         self.assertContains(response, '<html lang="ru">')
         self.assertContains(response, "Введите город, чтобы посмотреть погоду")
         self.assertContains(response, "Сравнить")
+
+    @patch("weather.views.requests.get")
+    def test_valid_city_renders_translated_outfit_recommendation(self, mock_get):
+        mock_get.side_effect = [
+            MockWeatherResponse(
+                current_weather_payload(temp=-3, feels_like=-5, humidity=50)
+            ),
+            MockWeatherResponse(forecast_payload()),
+        ]
+
+        response = self.client.get(
+            "/",
+            {"city": "Kyiv"},
+            HTTP_ACCEPT_LANGUAGE="ru",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Совет по одежде")
+        self.assertContains(response, "Утеплитесь")
 
     @patch("weather.views.requests.get")
     def test_today_chart_includes_current_weather_plus_today_forecast(self, mock_get):
@@ -123,6 +199,10 @@ class WeatherIndexTests(TestCase):
                 {"label": "15:00", "temp": 24.7, "humidity": 53},
             ],
         )
+        self.assertEqual(
+            response.context["chart_data"]["2026-05-14"]["outfit_recommendation"],
+            response.context["outfit_recommendation"],
+        )
 
     @patch("weather.views.requests.get")
     def test_future_day_chart_groups_all_returned_forecast_points(self, mock_get):
@@ -143,6 +223,18 @@ class WeatherIndexTests(TestCase):
             ],
         )
         self.assertEqual(response.context["chart_data"]["2026-05-15"]["theme"], "rain")
+        self.assertEqual(
+            response.context["chart_data"]["2026-05-15"]["outfit_recommendation"][
+                "title"
+            ],
+            "Stay cool",
+        )
+        self.assertIn(
+            "Take an umbrella.",
+            response.context["chart_data"]["2026-05-15"]["outfit_recommendation"][
+                "items"
+            ],
+        )
 
     @patch("weather.views.requests.get")
     def test_unknown_city_renders_error_state(self, mock_get):

@@ -419,6 +419,14 @@ body {
 }
 
 /* ── Current Weather ───────────────────────────── */
+.current-dashboard {
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(16rem, 0.85fr);
+    gap: 1rem;
+    align-items: stretch;
+    margin-bottom: 1.25rem;
+}
+
 .current-weather {
     border-radius: 24px;
     padding: 2rem 2.5rem;
@@ -426,7 +434,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin-bottom: 1.25rem;
+    margin-bottom: 0;
 }
 
 .current-location {
@@ -481,6 +489,60 @@ body {
     line-height: 1;
     filter: drop-shadow(0 4px 20px rgba(255,255,255,0.2));
     animation: float 4s ease-in-out infinite;
+}
+
+.outfit-card {
+    border-radius: 20px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.outfit-kicker {
+    color: var(--muted);
+    font-size: 0.72rem;
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.outfit-card h2 {
+    font-size: 1.25rem;
+    line-height: 1.15;
+}
+
+.outfit-card p {
+    color: var(--accent2);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.outfit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style: none;
+}
+
+.outfit-list li {
+    position: relative;
+    min-height: 1.5rem;
+    padding-left: 1.4rem;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+.outfit-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent2);
+    font-weight: 800;
 }
 
 @keyframes float {
@@ -638,7 +700,9 @@ body {
 
 /* ── Responsive ────────────────────────────────── */
 @media (max-width: 580px) {
+    .current-dashboard { grid-template-columns: 1fr; }
     .current-weather { flex-direction: column-reverse; padding: 1.5rem; text-align: center; }
+    .outfit-card { padding: 1.1rem; }
     .current-temp { font-size: 3.6rem; }
     .weather-emoji { font-size: 4rem; }
     .current-meta { justify-content: center; }

@@ -116,3 +116,105 @@ msgstr "ausgewählt"
 
 msgid "Comparison is unavailable."
 msgstr "Vergleich ist nicht verfügbar."
+
+msgid "Outfit advice"
+msgstr "Kleidungstipp"
+
+msgid "Bundle up"
+msgstr "Warm einpacken"
+
+msgid "Freezing conditions call for serious insulation."
+msgstr "Frostige Bedingungen brauchen starke Isolierung."
+
+msgid "Wear a heavy winter coat."
+msgstr "Trage einen dicken Wintermantel."
+
+msgid "Add a warm hat, scarf, and gloves."
+msgstr "Nimm warme Mütze, Schal und Handschuhe dazu."
+
+msgid "Choose insulated footwear."
+msgstr "Wähle isolierte Schuhe."
+
+msgid "Dress warm"
+msgstr "Warm anziehen"
+
+msgid "It will feel cold, so keep a warm outer layer ready."
+msgstr "Es fühlt sich kalt an, also plane eine warme Außenschicht ein."
+
+msgid "Wear a warm coat."
+msgstr "Trage einen warmen Mantel."
+
+msgid "Use a sweater or hoodie as a middle layer."
+msgstr "Nutze Pullover oder Hoodie als Zwischenschicht."
+
+msgid "Choose closed shoes."
+msgstr "Wähle geschlossene Schuhe."
+
+msgid "Use a light jacket"
+msgstr "Leichte Jacke nutzen"
+
+msgid "Mild but cool weather is best handled with layers."
+msgstr "Mildes, kühles Wetter funktioniert am besten mit Schichten."
+
+msgid "Wear a jacket or sweater."
+msgstr "Trage Jacke oder Pullover."
+
+msgid "Keep a removable layer for changing conditions."
+msgstr "Nimm eine Schicht mit, die du leicht ausziehen kannst."
+
+msgid "Long pants will feel more comfortable."
+msgstr "Lange Hosen sind angenehmer."
+
+msgid "Keep it light"
+msgstr "Leicht bleiben"
+
+msgid "Comfortable weather, but a light layer may still help."
+msgstr "Angenehmes Wetter, aber eine leichte Schicht kann helfen."
+
+msgid "Wear a light layer or long-sleeve shirt."
+msgstr "Trage eine leichte Schicht oder ein Langarmshirt."
+
+msgid "Comfortable everyday shoes are enough."
+msgstr "Bequeme Alltagsschuhe reichen aus."
+
+msgid "Carry a thin jacket if you will be out late."
+msgstr "Nimm eine dünne Jacke mit, wenn du spät draußen bist."
+
+msgid "Stay cool"
+msgstr "Kühl bleiben"
+
+msgid "Warm weather favors light, breathable clothing."
+msgstr "Warmes Wetter passt gut zu leichter, atmungsaktiver Kleidung."
+
+msgid "Wear light breathable clothes."
+msgstr "Trage leichte, atmungsaktive Kleidung."
+
+msgid "Choose comfortable light shoes."
+msgstr "Wähle bequeme leichte Schuhe."
+
+msgid "Take water if you will be outside for a while."
+msgstr "Nimm Wasser mit, wenn du länger draußen bist."
+
+msgid "Add a waterproof outer layer."
+msgstr "Ergänze eine wasserdichte Außenschicht."
+
+msgid "Take an umbrella and avoid exposed routes."
+msgstr "Nimm einen Regenschirm mit und meide offene Wege."
+
+msgid "Take an umbrella."
+msgstr "Nimm einen Regenschirm mit."
+
+msgid "Wear a waterproof jacket or shoes."
+msgstr "Trage wasserdichte Jacke oder Schuhe."
+
+msgid "Wear warm waterproof boots."
+msgstr "Trage warme wasserdichte Stiefel."
+
+msgid "Use gloves for extra warmth."
+msgstr "Nutze Handschuhe für zusätzliche Wärme."
+
+msgid "Use breathable layers because damp air can feel colder."
+msgstr "Nutze atmungsaktive Schichten, weil feuchte Luft kälter wirken kann."
+
+msgid "Prefer breathable fabrics and keep water nearby."
+msgstr "Bevorzuge atmungsaktive Stoffe und halte Wasser bereit."

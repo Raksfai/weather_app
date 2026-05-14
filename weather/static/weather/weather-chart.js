@@ -24,6 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedDate = selectedElement ? JSON.parse(selectedElement.textContent) : null
     const firstDate = selectedDate || Object.keys(chartData)[0]
     const chartTitle = document.getElementById("chart-title")
+    const outfitTitle = document.getElementById("outfit-title")
+    const outfitSummary = document.getElementById("outfit-summary")
+    const outfitList = document.getElementById("outfit-list")
     const weatherThemes = [
         "weather-clear",
         "weather-clouds",
@@ -33,6 +36,21 @@ document.addEventListener("DOMContentLoaded", () => {
         "weather-mist",
         "weather-default",
     ]
+
+    function updateOutfitRecommendation(recommendation) {
+        if (!recommendation || !outfitTitle || !outfitSummary || !outfitList) return
+
+        outfitTitle.textContent = recommendation.title || ""
+        outfitSummary.textContent = recommendation.summary || ""
+        outfitList.replaceChildren()
+
+        const items = recommendation.items || []
+        items.forEach((item) => {
+            const listItem = document.createElement("li")
+            listItem.textContent = item
+            outfitList.appendChild(listItem)
+        })
+    }
 
     const weatherChart = new Chart(chartElement, {
         type: "line",
@@ -138,6 +156,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (chartTitle) {
             chartTitle.textContent = dayData.title
         }
+
+        updateOutfitRecommendation(dayData.outfit_recommendation)
 
         document.body.classList.remove(...weatherThemes)
         document.body.classList.add(`weather-${dayData.theme || "default"}`)

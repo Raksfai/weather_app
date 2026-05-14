@@ -116,3 +116,105 @@ msgstr "обрано"
 
 msgid "Comparison is unavailable."
 msgstr "Порівняння недоступне."
+
+msgid "Outfit advice"
+msgstr "Порада щодо одягу"
+
+msgid "Bundle up"
+msgstr "Одягніться дуже тепло"
+
+msgid "Freezing conditions call for serious insulation."
+msgstr "Морозна погода потребує серйозного утеплення."
+
+msgid "Wear a heavy winter coat."
+msgstr "Одягніть теплу зимову куртку."
+
+msgid "Add a warm hat, scarf, and gloves."
+msgstr "Додайте теплу шапку, шарф і рукавички."
+
+msgid "Choose insulated footwear."
+msgstr "Оберіть утеплене взуття."
+
+msgid "Dress warm"
+msgstr "Одягніться тепло"
+
+msgid "It will feel cold, so keep a warm outer layer ready."
+msgstr "Буде відчутно холодно, тож потрібен теплий верхній шар."
+
+msgid "Wear a warm coat."
+msgstr "Одягніть тепле пальто або куртку."
+
+msgid "Use a sweater or hoodie as a middle layer."
+msgstr "Використайте светр або худі як середній шар."
+
+msgid "Choose closed shoes."
+msgstr "Оберіть закрите взуття."
+
+msgid "Use a light jacket"
+msgstr "Візьміть легку куртку"
+
+msgid "Mild but cool weather is best handled with layers."
+msgstr "Помірно прохолодну погоду найкраще проходити шарами."
+
+msgid "Wear a jacket or sweater."
+msgstr "Одягніть куртку або светр."
+
+msgid "Keep a removable layer for changing conditions."
+msgstr "Майте шар, який легко зняти при зміні погоди."
+
+msgid "Long pants will feel more comfortable."
+msgstr "Довгі штани будуть комфортнішими."
+
+msgid "Keep it light"
+msgstr "Одягайтесь легко"
+
+msgid "Comfortable weather, but a light layer may still help."
+msgstr "Погода комфортна, але легкий шар може знадобитися."
+
+msgid "Wear a light layer or long-sleeve shirt."
+msgstr "Одягніть легкий шар або сорочку з довгим рукавом."
+
+msgid "Comfortable everyday shoes are enough."
+msgstr "Зручного повсякденного взуття достатньо."
+
+msgid "Carry a thin jacket if you will be out late."
+msgstr "Візьміть тонку куртку, якщо будете надворі пізно."
+
+msgid "Stay cool"
+msgstr "Не перегрівайтесь"
+
+msgid "Warm weather favors light, breathable clothing."
+msgstr "У теплу погоду краще легкий дихаючий одяг."
+
+msgid "Wear light breathable clothes."
+msgstr "Одягніть легкий дихаючий одяг."
+
+msgid "Choose comfortable light shoes."
+msgstr "Оберіть зручне легке взуття."
+
+msgid "Take water if you will be outside for a while."
+msgstr "Візьміть воду, якщо будете надворі довго."
+
+msgid "Add a waterproof outer layer."
+msgstr "Додайте водонепроникний верхній шар."
+
+msgid "Take an umbrella and avoid exposed routes."
+msgstr "Візьміть парасольку й уникайте відкритих маршрутів."
+
+msgid "Take an umbrella."
+msgstr "Візьміть парасольку."
+
+msgid "Wear a waterproof jacket or shoes."
+msgstr "Одягніть водонепроникну куртку або взуття."
+
+msgid "Wear warm waterproof boots."
+msgstr "Одягніть теплі водонепроникні черевики."
+
+msgid "Use gloves for extra warmth."
+msgstr "Використайте рукавички для додаткового тепла."
+
+msgid "Use breathable layers because damp air can feel colder."
+msgstr "Обирайте дихаючі шари, бо вологе повітря може відчуватися холоднішим."
+
+msgid "Prefer breathable fabrics and keep water nearby."
+msgstr "Віддайте перевагу дихаючим тканинам і тримайте воду поруч."

@@ -88,8 +88,20 @@ class WeatherIndexTests(TestCase):
         self.assertContains(response, 'id="compare-temp-chart"')
         self.assertContains(response, 'id="compare-humidity-chart"')
         self.assertContains(response, 'id="compare-pressure-chart"')
+        self.assertContains(response, 'id="language-select"')
+        self.assertContains(response, 'id="weather-i18n"')
         self.assertContains(response, "weather/compare.js")
         self.assertContains(response, "weather-clear")
+        self.assertEqual(mock_get.call_args_list[0].kwargs["params"]["lang"], "en")
+        self.assertEqual(mock_get.call_args_list[1].kwargs["params"]["lang"], "en")
+
+    def test_accept_language_changes_template_and_js_i18n(self):
+        response = self.client.get("/", HTTP_ACCEPT_LANGUAGE="ru")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<html lang="ru">')
+        self.assertContains(response, "Введите город, чтобы посмотреть погоду")
+        self.assertContains(response, "Сравнить")
 
     @patch("weather.views.requests.get")
     def test_today_chart_includes_current_weather_plus_today_forecast(self, mock_get):
@@ -225,4 +237,33 @@ class WeatherCompareTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json(), {"error": "No cities provided"})
+        mock_get.assert_not_called()
+
+    @patch("weather.views.requests.get")
+    def test_compare_uses_active_language_for_api_and_errors(self, mock_get):
+        mock_get.side_effect = lambda _url, params, timeout: self.get_compare_response(
+            params["q"]
+        )
+
+        response = self.client.get(
+            "/compare/",
+            {"cities": "Kyiv,Missing"},
+            HTTP_ACCEPT_LANGUAGE="ru",
+        )
+        payload = response.json()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(mock_get.call_args_list[0].kwargs["params"]["lang"], "ru")
+        self.assertEqual(mock_get.call_args_list[1].kwargs["params"]["lang"], "ru")
+        self.assertEqual(
+            payload["errors"],
+            [{"city": "Missing", "message": "Город не найден"}],
+        )
+
+    @patch("weather.views.requests.get")
+    def test_compare_empty_cities_returns_translated_400(self, mock_get):
+        response = self.client.get("/compare/", HTTP_ACCEPT_LANGUAGE="ru")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json(), {"error": "Города не указаны"})
         mock_get.assert_not_called()

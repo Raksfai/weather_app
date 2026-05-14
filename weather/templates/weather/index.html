@@ -1,6 +1,8 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
-<html lang="en">
+{% get_current_language as LANGUAGE_CODE %}
+{% get_available_languages as LANGUAGES %}
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'weather/style.css' %}">
-    <title>Atmos — Weather</title>
+    <title>{% trans "Atmos — Weather" %}</title>
 </head>
 <body class="{% if weather_theme %}weather-{{ weather_theme }}{% else %}weather-default{% endif %}">
 
@@ -37,23 +39,35 @@
                 <span class="logo-text">ATMOS</span>
             </div>
             <div class="favorites-dropdown">
-                <button id="favorites-btn" class="btn btn-ghost">⭐ Favorites</button>
+                <button id="favorites-btn" class="btn btn-ghost">⭐ {% trans "Favorites" %}</button>
                 <div id="favorites-list"></div>
             </div>
             <button id="compare-open-btn" class="btn btn-ghost compare-header-btn" type="button" disabled>
-                ⚖️ Compare (0)
+                ⚖️ {% trans "Compare" %} (0)
             </button>
+            <form class="language-form" action="{% url 'set_language' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                <label class="sr-only" for="language-select">{% trans "Language" %}</label>
+                <select id="language-select" name="language" onchange="this.form.submit()">
+                    {% for language_code, language_name in LANGUAGES %}
+                    <option value="{{ language_code }}"{% if language_code == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ language_name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </form>
             <form class="search-form" action="" method="get">
                 <div class="search-inner">
                     <span>🔍</span>
                     <input
                         type="text"
                         name="city"
-                        placeholder="Search city..."
+                        placeholder="{% trans 'Search city...' %}"
                         value="{{ city|default:'' }}"
                         autocomplete="off"
                     >
-                    <button class="btn btn-primary" type="submit">Go</button>
+                    <button class="btn btn-primary" type="submit">{% trans "Go" %}</button>
                 </div>
             </form>
         </header>
@@ -68,14 +82,14 @@
                 <div class="current-location">
                     📍 {{ city }}, {{ country }}
                     <div class="current-actions">
-                        <button class="btn btn-ghost" onclick="addFavorite('{{ city|escapejs }}')" id="fav-btn">⭐ Add to favorites</button>
+                        <button class="btn btn-ghost" onclick="addFavorite('{{ city|escapejs }}')" id="fav-btn">⭐ {% trans "Add to favorites" %}</button>
                         <button
                             class="btn btn-ghost"
                             id="compare-toggle-btn"
                             type="button"
                             data-city="{{ city }}"
                         >
-                            ⚖️ Add to compare
+                            ⚖️ {% trans "Add to compare" %}
                         </button>
                     </div>
                 </div>
@@ -84,17 +98,17 @@
                 <div class="current-desc">{{ description|capfirst }}</div>
                 <div class="current-meta">
                     <div class="meta-item">
-                        <span class="meta-label">🌡 Feels like</span>
+                        <span class="meta-label">🌡 {% trans "Feels like" %}</span>
                         <span class="meta-value">{{ feels_like|floatformat:1 }}°C</span>
                     </div>
                     <div class="meta-divider"></div>
                     <div class="meta-item">
-                        <span class="meta-label">💧 Humidity</span>
+                        <span class="meta-label">💧 {% trans "Humidity" %}</span>
                         <span class="meta-value">{{ humidity }}%</span>
                     </div>
                     <div class="meta-divider"></div>
                     <div class="meta-item">
-                        <span class="meta-label">🧭 Pressure</span>
+                        <span class="meta-label">🧭 {% trans "Pressure" %}</span>
                         <span class="meta-value">{{ pressure }} hPa</span>
                     </div>
                 </div>
@@ -108,12 +122,12 @@
         <section class="chart-section glass">
             <div class="chart-header">
                 <div>
-                    <h2 class="section-title">Today Details</h2>
-                    <p id="chart-title" class="chart-title">Temperature & humidity</p>
+                    <h2 class="section-title">{% trans "Today Details" %}</h2>
+                    <p id="chart-title" class="chart-title">{% trans "Temperature & humidity" %}</p>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-temp">Temperature</span>
-                    <span class="legend-humidity">Humidity</span>
+                    <span class="legend-temp">{% trans "Temperature" %}</span>
+                    <span class="legend-humidity">{% trans "Humidity" %}</span>
                 </div>
             </div>
             <div class="chart-wrap">
@@ -126,7 +140,7 @@
 
         {% if forecast %}
         <section class="forecast-section">
-            <h2 class="section-title">5-Day Forecast</h2>
+            <h2 class="section-title">{% trans "5-Day Forecast" %}</h2>
             <div class="forecast-grid">
                 {% for item in forecast %}
                 <button
@@ -151,7 +165,7 @@
         {% else %}
         <div class="empty-state">
             <div class="empty-emoji">🌍</div>
-            <p>Enter a city to see the weather</p>
+            <p>{% trans "Enter a city to see the weather" %}</p>
         </div>
         {% endif %}
     </div>
@@ -160,10 +174,10 @@
         <section class="compare-modal glass" role="dialog" aria-modal="true" aria-labelledby="compare-title">
             <div class="compare-modal-header">
                 <div>
-                    <h2 id="compare-title" class="compare-title">City comparison</h2>
-                    <p id="compare-subtitle" class="compare-subtitle">Select at least two cities</p>
+                    <h2 id="compare-title" class="compare-title">{% trans "City comparison" %}</h2>
+                    <p id="compare-subtitle" class="compare-subtitle">{% trans "Select at least two cities" %}</p>
                 </div>
-                <button id="compare-close-btn" class="btn btn-ghost modal-close-btn" type="button" aria-label="Close compare modal">×</button>
+                <button id="compare-close-btn" class="btn btn-ghost modal-close-btn" type="button" aria-label="{% trans 'Close compare modal' %}">×</button>
             </div>
 
             <div id="compare-message" class="compare-message" hidden></div>
@@ -173,15 +187,15 @@
 
             <div class="compare-chart-grid">
                 <div class="compare-chart-wrap">
-                    <h3>Temperature</h3>
+                    <h3>{% trans "Temperature" %}</h3>
                     <canvas id="compare-temp-chart"></canvas>
                 </div>
                 <div class="compare-chart-wrap">
-                    <h3>Humidity</h3>
+                    <h3>{% trans "Humidity" %}</h3>
                     <canvas id="compare-humidity-chart"></canvas>
                 </div>
                 <div class="compare-chart-wrap">
-                    <h3>Pressure</h3>
+                    <h3>{% trans "Pressure" %}</h3>
                     <canvas id="compare-pressure-chart"></canvas>
                 </div>
             </div>
@@ -190,11 +204,11 @@
                 <table class="compare-table">
                     <thead>
                         <tr>
-                            <th><button type="button" data-sort="name">City</button></th>
-                            <th><button type="button" data-sort="temp">Temp</button></th>
-                            <th><button type="button" data-sort="humidity">Humidity</button></th>
-                            <th><button type="button" data-sort="pressure">Pressure</button></th>
-                            <th>Weather</th>
+                            <th><button type="button" data-sort="name">{% trans "City" %}</button></th>
+                            <th><button type="button" data-sort="temp">{% trans "Temp" %}</button></th>
+                            <th><button type="button" data-sort="humidity">{% trans "Humidity" %}</button></th>
+                            <th><button type="button" data-sort="pressure">{% trans "Pressure" %}</button></th>
+                            <th>{% trans "Weather" %}</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -203,6 +217,7 @@
             </div>
         </section>
     </div>
+    {{ i18n|json_script:"weather-i18n" }}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{% static 'weather/weather-chart.js' %}"></script>
     <script src="{% static 'weather/compare.js' %}"></script>

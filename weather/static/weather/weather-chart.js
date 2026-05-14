@@ -1,4 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
+    function getChartI18nMessages() {
+        const element = document.getElementById("weather-i18n")
+        if (!element) return {}
+
+        try {
+            return JSON.parse(element.textContent)
+        } catch {
+            return {}
+        }
+    }
+
+    function chartT(key, fallback) {
+        return getChartI18nMessages()[key] || fallback
+    }
+
     const chartElement = document.getElementById("weather-chart")
     const dataElement = document.getElementById("weather-chart-data")
     const selectedElement = document.getElementById("selected-chart-date")
@@ -25,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
             labels: [],
             datasets: [
                 {
-                    label: "Temperature",
+                    label: chartT("temperature", "Temperature"),
                     data: [],
                     borderColor: "#fbbf24",
                     backgroundColor: "rgba(251, 191, 36, 0.18)",
@@ -37,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     yAxisID: "temperature",
                 },
                 {
-                    label: "Humidity",
+                    label: chartT("humidity", "Humidity"),
                     data: [],
                     borderColor: "#38bdf8",
                     backgroundColor: "rgba(56, 189, 248, 0.14)",

@@ -1,3 +1,18 @@
+function getFavoriteI18nMessages() {
+    const element = document.getElementById("weather-i18n")
+    if (!element) return {}
+
+    try {
+        return JSON.parse(element.textContent)
+    } catch {
+        return {}
+    }
+}
+
+function favoriteT(key, fallback) {
+    return getFavoriteI18nMessages()[key] || fallback
+}
+
 function addFavorite(city) {
     let favorites = getFavorites()
     if (favorites.includes(city)) return
@@ -24,16 +39,26 @@ function renderFavorites() {
     const container = document.getElementById("favorites-list")
     container.innerHTML = ""
     if (favorites.length === 0) {
-        container.innerHTML = "<div class='favorite-item'><p>No favorites yet.</p></div>"
+        const empty = document.createElement("div")
+        empty.classList.add("favorite-item")
+        const text = document.createElement("p")
+        text.textContent = favoriteT("noFavorites", "No favorites yet.")
+        empty.appendChild(text)
+        container.appendChild(empty)
         return
     }
     favorites.forEach(city => {
         const div = document.createElement("div")
         div.classList.add("favorite-item")
-        div.innerHTML = `
-            <a href="/?city=${city}">${city}</a>
-            <button class="btn btn-danger" onclick="removeFavorite('${city}')">Remove</button>
-        `
+        const link = document.createElement("a")
+        link.href = `/?city=${encodeURIComponent(city)}`
+        link.textContent = city
+        const button = document.createElement("button")
+        button.className = "btn btn-danger"
+        button.type = "button"
+        button.textContent = favoriteT("remove", "Remove")
+        button.addEventListener("click", () => removeFavorite(city))
+        div.append(link, button)
         container.appendChild(div)
     })
 }

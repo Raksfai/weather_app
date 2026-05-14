@@ -1,0 +1,118 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: weather-app\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-13 00:00+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14) ? 2 : 3);\n"
+
+msgid "Atmos — Weather"
+msgstr "Atmos — Погода"
+
+msgid "Favorites"
+msgstr "Обране"
+
+msgid "Compare"
+msgstr "Порівняти"
+
+msgid "Language"
+msgstr "Мова"
+
+msgid "Search city..."
+msgstr "Пошук міста..."
+
+msgid "Go"
+msgstr "Пошук"
+
+msgid "Add to favorites"
+msgstr "Додати в обране"
+
+msgid "Add to compare"
+msgstr "Додати до порівняння"
+
+msgid "Feels like"
+msgstr "Відчувається як"
+
+msgid "Humidity"
+msgstr "Вологість"
+
+msgid "Pressure"
+msgstr "Тиск"
+
+msgid "Today Details"
+msgstr "Деталі сьогодні"
+
+msgid "Temperature & humidity"
+msgstr "Температура і вологість"
+
+msgid "Temperature"
+msgstr "Температура"
+
+msgid "5-Day Forecast"
+msgstr "Прогноз на 5 днів"
+
+msgid "Enter a city to see the weather"
+msgstr "Введіть місто, щоб побачити погоду"
+
+msgid "City comparison"
+msgstr "Порівняння міст"
+
+msgid "Select at least two cities"
+msgstr "Оберіть щонайменше два міста"
+
+msgid "Close compare modal"
+msgstr "Закрити вікно порівняння"
+
+msgid "City"
+msgstr "Місто"
+
+msgid "Temp"
+msgstr "Темп."
+
+msgid "Weather"
+msgstr "Погода"
+
+msgid "Add at least two cities to compare."
+msgstr "Додайте щонайменше два міста для порівняння."
+
+msgid "⚖️ Add to compare"
+msgstr "⚖️ Додати до порівняння"
+
+msgid "City wasn't found"
+msgstr "Місто не знайдено"
+
+msgid "Weather service is unavailable"
+msgstr "Сервіс погоди недоступний"
+
+msgid "No cities provided"
+msgstr "Міста не вказані"
+
+msgid "Weather chart for %(date)s"
+msgstr "Графік погоди на %(date)s"
+
+msgid "✓ In compare"
+msgstr "✓ У порівнянні"
+
+msgid "Loading comparison..."
+msgstr "Завантаження порівняння..."
+
+msgid "Maximum 5 cities. Remove one to add another."
+msgstr "Максимум 5 міст. Видаліть одне, щоб додати інше."
+
+msgid "No favorites yet."
+msgstr "Обраних міст ще немає."
+
+msgid "Remove"
+msgstr "Видалити"
+
+msgid "selected"
+msgstr "обрано"
+
+msgid "Comparison is unavailable."
+msgstr "Порівняння недоступне."

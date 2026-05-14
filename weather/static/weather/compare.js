@@ -5,6 +5,21 @@ let compareCharts = []
 let compareRows = []
 let compareSort = { key: null, direction: "asc" }
 
+function getI18nMessages() {
+    const element = document.getElementById("weather-i18n")
+    if (!element) return {}
+
+    try {
+        return JSON.parse(element.textContent)
+    } catch {
+        return {}
+    }
+}
+
+function compareT(key, fallback) {
+    return getI18nMessages()[key] || fallback
+}
+
 function getCompareList() {
     const raw = localStorage.getItem(COMPARE_KEY)
     if (!raw) return []
@@ -28,7 +43,7 @@ function renderCompareCount() {
     const cities = getCompareList()
 
     if (compareButton) {
-        compareButton.textContent = `⚖️ Compare (${cities.length})`
+        compareButton.textContent = `⚖️ ${compareT("compare", "Compare")} (${cities.length})`
         compareButton.disabled = cities.length < 2
         compareButton.classList.toggle("is-disabled", cities.length < 2)
     }
@@ -36,7 +51,9 @@ function renderCompareCount() {
     if (toggleButton) {
         const currentCity = toggleButton.dataset.city
         const isSelected = cities.includes(currentCity)
-        toggleButton.textContent = isSelected ? "✓ In compare" : "⚖️ Add to compare"
+        toggleButton.textContent = isSelected
+            ? compareT("inCompare", "✓ In compare")
+            : compareT("addToCompare", "⚖️ Add to compare")
         toggleButton.classList.toggle("is-active", isSelected)
     }
 }
@@ -54,7 +71,9 @@ function addToCompare(city) {
     if (cities.includes(city)) return cities
 
     if (cities.length >= COMPARE_LIMIT) {
-        openCompareModal("Maximum 5 cities. Remove one to add another.")
+        openCompareModal(
+            compareT("maximumCities", "Maximum 5 cities. Remove one to add another.")
+        )
         return cities
     }
 
@@ -120,17 +139,17 @@ async function loadCompareData(successMessage = "") {
 
     if (subtitle) {
         subtitle.textContent = cities.length
-            ? `${cities.length} selected: ${cities.join(", ")}`
-            : "Select at least two cities"
+            ? `${cities.length} ${compareT("selected", "selected")}: ${cities.join(", ")}`
+            : compareT("selectAtLeastTwo", "Select at least two cities")
     }
 
     if (cities.length < 2) {
         clearCompareContent()
-        showCompareMessage("Add at least two cities to compare.")
+        showCompareMessage(compareT("addAtLeastTwo", "Add at least two cities to compare."))
         return
     }
 
-    showCompareMessage("Loading comparison...")
+    showCompareMessage(compareT("loadingComparison", "Loading comparison..."))
 
     const params = new URLSearchParams({ cities: cities.join(",") })
     const response = await fetch(`/compare/?${params.toString()}`)
@@ -138,7 +157,9 @@ async function loadCompareData(successMessage = "") {
 
     if (!response.ok) {
         clearCompareContent()
-        showCompareMessage(payload.error || "Comparison is unavailable.")
+        showCompareMessage(
+            payload.error || compareT("comparisonUnavailable", "Comparison is unavailable.")
+        )
         return
     }
 
@@ -165,7 +186,7 @@ function renderCompareErrors(errors) {
         const removeButton = document.createElement("button")
         removeButton.type = "button"
         removeButton.className = "btn btn-danger"
-        removeButton.textContent = "Remove"
+        removeButton.textContent = compareT("remove", "Remove")
         removeButton.addEventListener("click", () => removeFromCompare(error.city))
 
         item.append(text, removeButton)
@@ -191,7 +212,7 @@ function renderCompareCards(cities) {
         const removeButton = document.createElement("button")
         removeButton.className = "btn btn-danger"
         removeButton.type = "button"
-        removeButton.textContent = "Remove"
+        removeButton.textContent = compareT("remove", "Remove")
         removeButton.addEventListener("click", () => {
             removeFromCompare(city.name)
         })
@@ -249,7 +270,7 @@ function renderCompareTable(cities) {
         const removeButton = document.createElement("button")
         removeButton.className = "btn btn-danger"
         removeButton.type = "button"
-        removeButton.textContent = "Remove"
+        removeButton.textContent = compareT("remove", "Remove")
         removeButton.addEventListener("click", () => {
             removeFromCompare(city.name)
         })
@@ -268,20 +289,20 @@ function renderCompareChart(cities) {
     const metrics = [
         {
             id: "compare-temp-chart",
-            label: "Temperature",
+            label: compareT("temperature", "Temperature"),
             key: "temp",
             suffix: "°C",
         },
         {
             id: "compare-humidity-chart",
-            label: "Humidity",
+            label: compareT("humidity", "Humidity"),
             key: "humidity",
             suffix: "%",
             max: 100,
         },
         {
             id: "compare-pressure-chart",
-            label: "Pressure",
+            label: compareT("pressure", "Pressure"),
             key: "pressure",
             suffix: " hPa",
         },

@@ -1,0 +1,118 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: weather-app\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-13 00:00+0000\n"
+"PO-Revision-Date: 2026-05-13 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+
+msgid "Atmos — Weather"
+msgstr "Atmos — Pogoda"
+
+msgid "Favorites"
+msgstr "Ulubione"
+
+msgid "Compare"
+msgstr "Porównaj"
+
+msgid "Language"
+msgstr "Język"
+
+msgid "Search city..."
+msgstr "Szukaj miasta..."
+
+msgid "Go"
+msgstr "Szukaj"
+
+msgid "Add to favorites"
+msgstr "Dodaj do ulubionych"
+
+msgid "Add to compare"
+msgstr "Dodaj do porównania"
+
+msgid "Feels like"
+msgstr "Odczuwalna"
+
+msgid "Humidity"
+msgstr "Wilgotność"
+
+msgid "Pressure"
+msgstr "Ciśnienie"
+
+msgid "Today Details"
+msgstr "Szczegóły na dziś"
+
+msgid "Temperature & humidity"
+msgstr "Temperatura i wilgotność"
+
+msgid "Temperature"
+msgstr "Temperatura"
+
+msgid "5-Day Forecast"
+msgstr "Prognoza na 5 dni"
+
+msgid "Enter a city to see the weather"
+msgstr "Wpisz miasto, aby zobaczyć pogodę"
+
+msgid "City comparison"
+msgstr "Porównanie miast"
+
+msgid "Select at least two cities"
+msgstr "Wybierz co najmniej dwa miasta"
+
+msgid "Close compare modal"
+msgstr "Zamknij okno porównania"
+
+msgid "City"
+msgstr "Miasto"
+
+msgid "Temp"
+msgstr "Temp."
+
+msgid "Weather"
+msgstr "Pogoda"
+
+msgid "Add at least two cities to compare."
+msgstr "Dodaj co najmniej dwa miasta do porównania."
+
+msgid "⚖️ Add to compare"
+msgstr "⚖️ Dodaj do porównania"
+
+msgid "City wasn't found"
+msgstr "Nie znaleziono miasta"
+
+msgid "Weather service is unavailable"
+msgstr "Serwis pogodowy jest niedostępny"
+
+msgid "No cities provided"
+msgstr "Nie podano miast"
+
+msgid "Weather chart for %(date)s"
+msgstr "Wykres pogody dla %(date)s"
+
+msgid "✓ In compare"
+msgstr "✓ W porównaniu"
+
+msgid "Loading comparison..."
+msgstr "Ładowanie porównania..."
+
+msgid "Maximum 5 cities. Remove one to add another."
+msgstr "Maksymalnie 5 miast. Usuń jedno, aby dodać kolejne."
+
+msgid "No favorites yet."
+msgstr "Brak ulubionych."
+
+msgid "Remove"
+msgstr "Usuń"
+
+msgid "selected"
+msgstr "wybrano"
+
+msgid "Comparison is unavailable."
+msgstr "Porównanie jest niedostępne."

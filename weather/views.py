@@ -5,10 +5,47 @@ from datetime import UTC, datetime, timedelta
 import requests
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.utils.translation import get_language
+from django.utils.translation import gettext as _
+from django.utils.translation import override
 from core.settings import WEATHER_API_KEY
 
 
 COMPARE_LIMIT = 5
+OPENWEATHER_LANGUAGES = {"en", "uk", "ru", "de", "es", "pl"}
+
+
+def get_openweather_language(language_code=None):
+    language = (language_code or get_language() or "en").split("-")[0]
+    return language if language in OPENWEATHER_LANGUAGES else "en"
+
+
+def get_js_i18n():
+    return {
+        "addAtLeastTwo": _("Add at least two cities to compare."),
+        "addToCompare": _("⚖️ Add to compare"),
+        "city": _("City"),
+        "cityComparison": _("City comparison"),
+        "closeCompareModal": _("Close compare modal"),
+        "compare": _("Compare"),
+        "comparisonUnavailable": _("Comparison is unavailable."),
+        "favorites": _("Favorites"),
+        "humidity": _("Humidity"),
+        "inCompare": _("✓ In compare"),
+        "loadingComparison": _("Loading comparison..."),
+        "maximumCities": _("Maximum 5 cities. Remove one to add another."),
+        "noFavorites": _("No favorites yet."),
+        "pressure": _("Pressure"),
+        "remove": _("Remove"),
+        "selected": _("selected"),
+        "selectAtLeastTwo": _("Select at least two cities"),
+        "temperature": _("Temperature"),
+        "weather": _("Weather"),
+    }
+
+
+def build_base_context():
+    return {"i18n": get_js_i18n()}
 
 
 def get_weather_theme(weather_id):
@@ -74,7 +111,8 @@ def build_current_weather_context(weather_data):
     }
 
 
-def fetch_compare_city(city):
+def fetch_compare_city(city, language_code=None):
+    openweather_language = get_openweather_language(language_code)
     try:
         response = requests.get(
             "https://api.openweathermap.org/data/2.5/weather",
@@ -82,15 +120,18 @@ def fetch_compare_city(city):
                 "q": city,
                 "appid": WEATHER_API_KEY,
                 "units": "metric",
+                "lang": openweather_language,
             },
             timeout=10,
         )
         weather_data = response.json()
     except requests.RequestException:
-        return {"city": city, "message": "Weather service is unavailable"}
+        with override(openweather_language):
+            return {"city": city, "message": _("Weather service is unavailable")}
 
     if str(weather_data.get("cod")) != "200":
-        return {"city": city, "message": "City wasn't found"}
+        with override(openweather_language):
+            return {"city": city, "message": _("City wasn't found")}
 
     return build_current_weather_context(weather_data)
 
@@ -164,7 +205,8 @@ def build_forecast_data(forecast_items, weather_data):
             points.insert(0, current_point)
         points.sort(key=get_time_sort_value)
         chart_data[date_value] = {
-            "title": f"Weather chart for {format_display_date(date_value)}",
+            "title": _("Weather chart for %(date)s")
+            % {"date": format_display_date(date_value)},
             "theme": get_weather_theme(
                 current_weather_id if date_value == current_date else daily_item["weather_id"]
             ),
@@ -173,7 +215,8 @@ def build_forecast_data(forecast_items, weather_data):
 
     if current_date and current_date not in chart_data:
         chart_data[current_date] = {
-            "title": f"Weather chart for {format_display_date(current_date)}",
+            "title": _("Weather chart for %(date)s")
+            % {"date": format_display_date(current_date)},
             "theme": get_weather_theme(current_weather_id),
             "points": [current_point],
         }
@@ -201,17 +244,29 @@ def build_forecast_data(forecast_items, weather_data):
 def index(request):
     data = request.GET.get("city")
     if not data:
-        return render(request, "weather/index.html")
+        return render(request, "weather/index.html", build_base_context())
 
-    weather_now = f"https://api.openweathermap.org/data/2.5/weather?q={data}&appid={WEATHER_API_KEY}&units=metric"
-    response = requests.get(weather_now)
+    weather_now = "https://api.openweathermap.org/data/2.5/weather"
+    response = requests.get(
+        weather_now,
+        params={
+            "q": data,
+            "appid": WEATHER_API_KEY,
+            "units": "metric",
+            "lang": get_openweather_language(),
+        },
+    )
     weather_data = response.json()
 
     if str(weather_data.get("cod")) != "200":
-        return render(request, "weather/index.html", {"error": "City wasn't found"})
+        return render(
+            request,
+            "weather/index.html",
+            build_base_context() | {"error": _("City wasn't found")},
+        )
 
     weather_id = weather_data["weather"][0]["id"]
-    context = {
+    context = build_base_context() | {
         "country": weather_data["sys"]["country"],
         "city": weather_data["name"],
         "temp": weather_data["main"]["temp"],
@@ -223,8 +278,16 @@ def index(request):
         "weather_theme": get_weather_theme(weather_id),
     }
 
-    weather_forecast = f"https://api.openweathermap.org/data/2.5/forecast?q={data}&appid={WEATHER_API_KEY}&units=metric"
-    response = requests.get(weather_forecast)
+    weather_forecast = "https://api.openweathermap.org/data/2.5/forecast"
+    response = requests.get(
+        weather_forecast,
+        params={
+            "q": data,
+            "appid": WEATHER_API_KEY,
+            "units": "metric",
+            "lang": get_openweather_language(),
+        },
+    )
     forecast_data = response.json()
 
     forecast_context, chart_data, selected_chart_date = build_forecast_data(
@@ -240,10 +303,16 @@ def index(request):
 def compare(request):
     cities = parse_compare_cities(request.GET.get("cities", ""))
     if not cities:
-        return JsonResponse({"error": "No cities provided"}, status=400)
+        return JsonResponse({"error": _("No cities provided")}, status=400)
 
+    language_code = get_openweather_language()
     with ThreadPoolExecutor(max_workers=min(len(cities), COMPARE_LIMIT)) as executor:
-        results = list(executor.map(fetch_compare_city, cities))
+        results = list(
+            executor.map(
+                lambda city: fetch_compare_city(city, language_code),
+                cities,
+            )
+        )
 
     city_results = []
     errors = []
